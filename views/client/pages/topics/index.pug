@@ -1,7 +1,8 @@
-doctype html
-html
-  head
-    title Trang Chủ Đề Bài Hát  
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
 
-  body 
-    h1 Trang Chủ Đề Bài Hát
+block main
+  .container.my-3
+    .row
+      .col-12
+        +box-head(pageTitle)
