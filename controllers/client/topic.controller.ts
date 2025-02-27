@@ -8,6 +8,7 @@ export const topics = async (req: Request, res: Response) => {
     });
 
     res.render("client/pages/topics/index", {
-        pageTitle: "Chủ Đề Bài Hát"
+        pageTitle: "Chủ Đề Bài Hát",
+        topics: topics
     });
 };
