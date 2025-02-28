@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Topic from "../../models/topic.model";
 import Song from "../../models/song.model";
 import Singer from "../../models/singer.model";
+import FavouriteSong from "../../models/favourite-song.model";
 
 // [GET] /songs/:slugTopic
 export const list = async (req: Request, res: Response) => {
@@ -53,6 +54,13 @@ export const detail = async (req: Request, res: Response) => {
         deleted: false
     }).select("title");
 
+    const favouriteSong = await FavouriteSong.findOne({
+        // userId: "", // Phần đăng nhập (tự code)
+        songId: song.id
+    });
+
+    song["isFavouriteSong"] = favouriteSong ? true : false;
+
     res.render("client/pages/songs/detail", {
         pageTitle: "Chi Tiết Bài Hát",
         song: song,
@@ -88,5 +96,38 @@ export const like = async (req: Request, res: Response) => {
         code: 200,
         message: "Thành Công!",
         like: newLike
+    });
+};
+
+// [PATCH] /songs/favourite/:typeFavourite/:idSong
+export const favourite = async (req: Request, res: Response) => {
+    const idSong: string = req.params.idSong;
+    const typeFavourite: string = req.params.typeFavourite;
+
+    switch (typeFavourite) {
+        case "favourite":
+            const existFavouriteSong = await FavouriteSong.findOne({
+                songId: idSong
+            });
+            if (!existFavouriteSong) {
+                const record = new FavouriteSong({
+                    // userId: "", // Phần đăng nhập (tự code)
+                    songId: idSong,
+                });
+                await record.save();
+            }
+            break;
+        case "unfavourite":
+            await FavouriteSong.deleteOne({
+                songId: idSong
+            });
+            break;
+        default:
+            break;
+    }
+
+    res.json({
+        code: 200,
+        message: "Thành Công!",
     });
 };

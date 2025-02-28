@@ -50,11 +50,39 @@ if (buttonLike) {
         fetch(link, option)
             .then(res => res.json())
             .then(data => {
-                const span = buttonLike.querySelector("span");
-                span.innerHTML = `${data.like} thích`;
+                if (data.code == 200) {
+                    const span = buttonLike.querySelector("span");
+                    span.innerHTML = `${data.like} thích`;
 
-                buttonLike.classList.toggle("active");
+                    buttonLike.classList.toggle("active");
+                }
             })
     });
 }
 // End Button Like
+
+// Button Favourite
+const buttonFavourite = document.querySelector("[button-favourite]");
+if (buttonFavourite) {
+    buttonFavourite.addEventListener("click", () => {
+        const idSong = buttonFavourite.getAttribute("button-favourite");
+        const isActive = buttonFavourite.classList.contains("active");
+
+        const typeFavourite = isActive ? "unfavourite" : "favourite";
+
+        const link = `/songs/favourite/${typeFavourite}/${idSong}`;
+
+        const option = {
+            method: "PATCH"
+        }
+
+        fetch(link, option)
+            .then(res => res.json())
+            .then(data => {
+                if (data.code == 200) {
+                    buttonFavourite.classList.toggle("active");
+                }
+            })
+    });
+}
+// End Button Favourite
